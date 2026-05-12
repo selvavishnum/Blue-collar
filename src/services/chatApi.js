@@ -1,4 +1,8 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
+// In production (Railway), frontend and backend share the same origin → use ""
+// In local dev, backend runs on :3001 (or override with VITE_API_URL)
+const API_BASE = import.meta.env.PROD
+  ? ""
+  : (import.meta.env.VITE_API_URL || "http://localhost:3001");
 
 async function apiFetch(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
