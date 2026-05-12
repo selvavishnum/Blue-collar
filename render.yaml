@@ -1,0 +1,27 @@
+services:
+  # ── Backend API (Web Service) ────────────────────────────────────────────────
+  - type: web
+    name: blue-collar-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node src/index.js
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: OPENAI_API_KEY
+        sync: false          # Set this manually in Render dashboard
+
+  # ── Frontend (Static Site) ───────────────────────────────────────────────────
+  - type: static
+    name: blue-collar-frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: true
+    envVars:
+      - key: VITE_API_URL
+        sync: false          # Set to your API service URL after first deploy
+                             # e.g. https://blue-collar-api.onrender.com
