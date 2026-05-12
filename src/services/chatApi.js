@@ -1,8 +1,8 @@
-// In production (Railway), frontend and backend share the same origin → use ""
-// In local dev, backend runs on :3001 (or override with VITE_API_URL)
-const API_BASE = import.meta.env.PROD
-  ? ""
-  : (import.meta.env.VITE_API_URL || "http://localhost:3001");
+// On Render: frontend (Static Site) and backend (Web Service) are separate URLs.
+// Set VITE_API_URL in Render → blue-collar-frontend → Environment to your API URL.
+// e.g. https://blue-collar-api.onrender.com
+// In local dev it falls back to localhost:3001.
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 async function apiFetch(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
