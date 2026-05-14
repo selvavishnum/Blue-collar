@@ -28,6 +28,38 @@ app.use(cors({
 
 app.use(express.json());
 
+// Root — shows API is live (visible when visiting the Render URL directly)
+app.get("/", (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Blue Collar Job API</title>
+      <style>
+        body { font-family: monospace; background: #0A0F1E; color: #F1F5F9; padding: 40px; }
+        h1 { color: #F59E0B; } a { color: #3B82F6; }
+        .badge { background: #10B98133; color: #10B981; border: 1px solid #10B98155;
+                 padding: 2px 10px; border-radius: 6px; font-size: 12px; }
+        .route { background: #111827; border: 1px solid #1F2D45; border-radius: 8px;
+                 padding: 10px 16px; margin: 8px 0; }
+        code { color: #F59E0B; }
+      </style>
+    </head>
+    <body>
+      <h1>👷 Blue Collar Job API</h1>
+      <p><span class="badge">🟢 SERVER RUNNING</span></p>
+      <p>வேலை வாய்ப்பு — AI-powered job connect for Tamil Nadu</p>
+      <h3>Endpoints</h3>
+      <div class="route"><code>GET  /health</code> — Server status</div>
+      <div class="route"><code>POST /api/chat/start</code> — Start chatbot session</div>
+      <div class="route"><code>POST /api/chat/message</code> — Send message</div>
+      <div class="route"><code>POST /api/chat/extract-profile</code> — Generate worker profile</div>
+      <div class="route"><code>POST /api/chat/verify-otp</code> — Verify worker OTP</div>
+    </body>
+    </html>
+  `);
+});
+
 // Health check
 app.get("/health", (req, res) => {
   res.json({
