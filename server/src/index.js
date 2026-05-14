@@ -65,7 +65,7 @@ app.get("/health", (req, res) => {
   res.json({
     status: "ok",
     service: "Blue Collar Job API",
-    aiProvider: "openai/gpt-4o",
+    aiProvider: "google/gemini-1.5-flash",
     environment: process.env.NODE_ENV || "development",
     timestamp: new Date().toISOString(),
   });
@@ -91,8 +91,8 @@ app.listen(PORT, () => {
   console.log(`   Chat API: POST /api/chat/start`);
   console.log();
 
-  if (!process.env.OPENAI_API_KEY) {
-    console.warn("⚠️  OPENAI_API_KEY not set — chatbot will use demo mode.");
+  if (!process.env.GEMINI_API_KEY) {
+    console.warn("⚠️  GEMINI_API_KEY not set — chatbot will use demo mode.");
     console.warn("   Add it in Render: Dashboard → blue-collar-api → Environment\n");
   }
 });

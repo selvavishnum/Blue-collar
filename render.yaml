@@ -10,7 +10,7 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: OPENAI_API_KEY
+      - key: GEMINI_API_KEY
         sync: false          # Set this manually in Render dashboard
 
   # ── Frontend (Static Site) ───────────────────────────────────────────────────

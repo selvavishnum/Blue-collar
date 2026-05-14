@@ -1,16 +1,16 @@
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { VELAI_BOT_SYSTEM_PROMPT, PROFILE_EXTRACTION_PROMPT } from "../prompts/velaiBot.js";
 
-let openaiClient = null;
+let genAI = null;
 
 function getClient() {
-  if (!openaiClient) {
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY is not set in environment variables");
+  if (!genAI) {
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is not set in environment variables");
     }
-    openaiClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
   }
-  return openaiClient;
+  return genAI;
 }
 
 /**
@@ -21,17 +21,23 @@ function getClient() {
 export async function getChatResponse(messages) {
   const client = getClient();
 
-  const response = await client.chat.completions.create({
-    model: "gpt-4o",
-    messages: [
-      { role: "system", content: VELAI_BOT_SYSTEM_PROMPT },
-      ...messages,
-    ],
-    max_tokens: 300,
-    temperature: 0.7,
+  const model = client.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    systemInstruction: VELAI_BOT_SYSTEM_PROMPT,
+    generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
   });
 
-  return response.choices[0].message.content.trim();
+  // Gemini uses "model" role instead of "assistant"
+  // Skip the last message (latest user msg) — it goes into sendMessage
+  const history = messages.slice(0, -1).map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  }));
+
+  const lastMsg = messages[messages.length - 1];
+  const chat = model.startChat({ history });
+  const result = await chat.sendMessage(lastMsg.content);
+  return result.response.text().trim();
 }
 
 /**
@@ -42,24 +48,24 @@ export async function getChatResponse(messages) {
 export async function extractProfile(messages) {
   const client = getClient();
 
-  // Build a clean transcript string
+  const model = client.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    generationConfig: {
+      maxOutputTokens: 500,
+      temperature: 0.1,
+      responseMimeType: "application/json",
+    },
+  });
+
   const transcript = messages
     .map((m) => `${m.role === "assistant" ? "Bot" : "Worker"}: ${m.content}`)
     .join("\n");
 
-  const response = await client.chat.completions.create({
-    model: "gpt-4o",
-    messages: [
-      { role: "system", content: PROFILE_EXTRACTION_PROMPT },
-      { role: "user", content: `TRANSCRIPT:\n${transcript}` },
-    ],
-    max_tokens: 500,
-    temperature: 0.1, // Low temp for accurate data extraction
-    response_format: { type: "json_object" },
-  });
+  const result = await model.generateContent(
+    `${PROFILE_EXTRACTION_PROMPT}\n\nTRANSCRIPT:\n${transcript}`
+  );
 
-  const raw = response.choices[0].message.content.trim();
-  return JSON.parse(raw);
+  return JSON.parse(result.response.text().trim());
 }
 
 /**
@@ -69,15 +75,12 @@ export async function extractProfile(messages) {
 export async function getInitialGreeting() {
   const client = getClient();
 
-  const response = await client.chat.completions.create({
-    model: "gpt-4o",
-    messages: [
-      { role: "system", content: VELAI_BOT_SYSTEM_PROMPT },
-      { role: "user", content: "[START_CONVERSATION]" },
-    ],
-    max_tokens: 150,
-    temperature: 0.8,
+  const model = client.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    systemInstruction: VELAI_BOT_SYSTEM_PROMPT,
+    generationConfig: { maxOutputTokens: 150, temperature: 0.8 },
   });
 
-  return response.choices[0].message.content.trim();
+  const result = await model.generateContent("[START_CONVERSATION]");
+  return result.response.text().trim();
 }
