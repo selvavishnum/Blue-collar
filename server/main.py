@@ -51,6 +51,18 @@ app.add_middleware(
 )
 
 
+# ── Health ───────────────────────────────────────────────────────────────────
+
+@app.get("/")
+async def root():
+    return {"app": "ShopGuard AI", "status": "running", "docs": "/docs"}
+
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
+
 # ── Cameras ──────────────────────────────────────────────────────────────────
 
 @app.get("/api/cameras")
