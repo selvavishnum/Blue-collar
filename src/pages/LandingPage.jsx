@@ -52,88 +52,136 @@ const features = [
 export default function LandingPage() {
   const navigate = useNavigate();
   const [hoveredRole, setHoveredRole] = useState(null);
+  const [hoveredCat, setHoveredCat] = useState(null);
 
   return (
-    <div style={{ background: palette.bg, minHeight: "100vh" }}>
-      {/* Header */}
+    <div style={{ background: palette.bg, minHeight: "100vh", overflowX: "hidden" }}>
+
+      {/* ── Header ────────────────────────────────────────────────────── */}
       <header style={{
-        background: "#050C1A",
-        borderBottom: `1px solid ${palette.cardBorder}`,
-        padding: "16px 24px",
+        position: "sticky", top: 0, zIndex: 100,
+        background: "rgba(4,8,15,0.85)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(255,255,255,0.07)",
+        padding: "14px 28px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{
-            background: palette.accent,
-            borderRadius: 10,
-            width: 38,
-            height: 38,
+            background: `linear-gradient(135deg, ${palette.accent}, ${palette.orange})`,
+            borderRadius: 11,
+            width: 40,
+            height: 40,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             fontSize: 20,
+            boxShadow: `0 4px 16px ${palette.accent}44`,
           }}>👷</div>
           <div>
             <h1 style={{ fontSize: 17, fontWeight: 800, margin: 0 }}>Blue Collar Job</h1>
-            <p style={{ color: palette.muted, fontSize: 10, margin: 0, fontFamily: "'Space Mono', monospace" }}>
-              வேலை வாய்ப்பு — Tamil Nadu
+            <p style={{ color: palette.muted, fontSize: 9, margin: 0, fontFamily: "'Space Mono', monospace", letterSpacing: 0.5 }}>
+              வேலை வாய்ப்பு · TAMIL NADU
             </p>
           </div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <Button variant="ghost" size="sm" onClick={() => navigate("/worker/onboard")}>Worker Login</Button>
-          <Button variant="primary" size="sm" onClick={() => navigate("/owner/dashboard")}>Owner Login</Button>
+          <Button size="sm" onClick={() => navigate("/owner/dashboard")}>Owner Login</Button>
         </div>
       </header>
 
-      {/* Hero */}
+      {/* ── Hero ──────────────────────────────────────────────────────── */}
       <section style={{
-        background: "linear-gradient(135deg, #050C1A 0%, #0D1B35 50%, #0A0F1E 100%)",
-        padding: "72px 24px 60px",
-        textAlign: "center",
         position: "relative",
+        padding: "90px 24px 80px",
+        textAlign: "center",
         overflow: "hidden",
+        minHeight: "88vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
       }}>
-        {/* Background grid */}
+        {/* Floating orbs */}
+        <div style={{
+          position: "absolute",
+          top: "10%", left: "8%",
+          width: 500, height: 500,
+          borderRadius: "50%",
+          background: `radial-gradient(circle, ${palette.accent}22 0%, transparent 70%)`,
+          animation: "orb1 12s ease-in-out infinite",
+          pointerEvents: "none",
+          filter: "blur(40px)",
+        }} />
+        <div style={{
+          position: "absolute",
+          top: "20%", right: "5%",
+          width: 400, height: 400,
+          borderRadius: "50%",
+          background: `radial-gradient(circle, ${palette.blue}22 0%, transparent 70%)`,
+          animation: "orb2 16s ease-in-out infinite",
+          pointerEvents: "none",
+          filter: "blur(50px)",
+        }} />
+        <div style={{
+          position: "absolute",
+          bottom: "5%", left: "30%",
+          width: 300, height: 300,
+          borderRadius: "50%",
+          background: `radial-gradient(circle, ${palette.purple}18 0%, transparent 70%)`,
+          animation: "orb1 20s ease-in-out infinite reverse",
+          pointerEvents: "none",
+          filter: "blur(60px)",
+        }} />
+        {/* Grid pattern */}
         <div style={{
           position: "absolute", inset: 0,
-          backgroundImage: `radial-gradient(${palette.accent}11 1px, transparent 1px)`,
-          backgroundSize: "32px 32px",
+          backgroundImage: `radial-gradient(${palette.accent}0e 1px, transparent 1px)`,
+          backgroundSize: "36px 36px",
           pointerEvents: "none",
+          opacity: 0.7,
         }} />
 
-        <div style={{ position: "relative", maxWidth: 700, margin: "0 auto" }}>
-          <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
-            <Badge color={palette.green}>MOBILE-FIRST</Badge>
-            <Badge color={palette.accent}>AI-DRIVEN</Badge>
-            <Badge color={palette.blue}>HYPER-LOCAL</Badge>
-            <Badge color={palette.purple}>ZERO RESUME</Badge>
+        <div style={{ position: "relative", maxWidth: 720, margin: "0 auto" }}>
+          <div className="fade-up" style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
+            <Badge color={palette.green} glow>MOBILE-FIRST</Badge>
+            <Badge color={palette.accent} glow>AI-DRIVEN</Badge>
+            <Badge color={palette.blue} glow>HYPER-LOCAL</Badge>
+            <Badge color={palette.purple} glow>ZERO RESUME</Badge>
           </div>
 
-          <h2 style={{
-            fontSize: "clamp(28px, 5vw, 52px)",
+          <h2 className="fade-up" style={{
+            fontSize: "clamp(36px, 6vw, 64px)",
             fontWeight: 800,
-            lineHeight: 1.15,
-            marginBottom: 18,
-            background: `linear-gradient(135deg, ${palette.text}, ${palette.accent})`,
+            lineHeight: 1.1,
+            marginBottom: 20,
+            letterSpacing: -1,
+            background: `linear-gradient(135deg, ${palette.text} 0%, ${palette.textSoft} 40%, ${palette.accent} 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
           }}>
             Blue-Collar Jobs,<br />Found in Minutes
           </h2>
 
-          <p style={{ color: palette.muted, fontSize: 16, lineHeight: 1.7, marginBottom: 36, maxWidth: 520, margin: "0 auto 36px" }}>
+          <p className="fade-up" style={{
+            color: palette.muted,
+            fontSize: 16,
+            lineHeight: 1.75,
+            marginBottom: 44,
+            maxWidth: 500,
+            margin: "0 auto 44px",
+          }}>
             AI-powered job matching for workers across Tamil Nadu.<br />
-            No resume. No English required. Just chat in Tamil.
+            <span style={{ color: palette.textSoft }}>No resume. No English required.</span> Just chat in Tamil.
           </p>
 
-          {/* Role Selection */}
-          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+          {/* Role Selection Cards */}
+          <div className="fade-up" style={{ display: "flex", gap: 20, justifyContent: "center", flexWrap: "wrap" }}>
             {[
               {
                 role: "worker",
@@ -142,6 +190,7 @@ export default function LandingPage() {
                 sub: "வேலை தேடுகிறேன்",
                 color: palette.blue,
                 path: "/worker/onboard",
+                ctaText: "Start Now",
               },
               {
                 role: "owner",
@@ -150,6 +199,7 @@ export default function LandingPage() {
                 sub: "ஆட்கள் தேடுகிறேன்",
                 color: palette.accent,
                 path: "/owner/dashboard",
+                ctaText: "Post a Job",
               },
             ].map((r) => (
               <div
@@ -158,30 +208,46 @@ export default function LandingPage() {
                 onMouseEnter={() => setHoveredRole(r.role)}
                 onMouseLeave={() => setHoveredRole(null)}
                 style={{
-                  background: hoveredRole === r.role ? r.color + "20" : palette.card,
-                  border: `2px solid ${hoveredRole === r.role ? r.color : palette.cardBorder}`,
-                  borderRadius: 16,
-                  padding: "28px 40px",
+                  background: hoveredRole === r.role
+                    ? `rgba(${r.color === palette.blue ? "99,102,241" : "245,158,11"},0.12)`
+                    : "rgba(255,255,255,0.04)",
+                  backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
+                  border: `1.5px solid ${hoveredRole === r.role ? r.color + "77" : "rgba(255,255,255,0.09)"}`,
+                  borderRadius: 20,
+                  padding: "32px 44px",
                   cursor: "pointer",
-                  transition: "all 0.2s",
-                  minWidth: 200,
-                  transform: hoveredRole === r.role ? "translateY(-4px)" : "none",
-                  boxShadow: hoveredRole === r.role ? `0 12px 40px ${r.color}22` : "none",
+                  transition: "all 0.25s ease",
+                  minWidth: 210,
+                  transform: hoveredRole === r.role ? "translateY(-6px) scale(1.02)" : "none",
+                  boxShadow: hoveredRole === r.role ? `0 20px 60px ${r.color}28` : "none",
                 }}
               >
-                <div style={{ fontSize: 42, marginBottom: 10 }}>{r.icon}</div>
-                <p style={{ color: palette.text, fontWeight: 800, fontSize: 16, margin: "0 0 4px" }}>{r.title}</p>
-                <p style={{ color: palette.muted, fontSize: 12, margin: 0, fontFamily: "'Space Mono', monospace" }}>{r.sub}</p>
                 <div style={{
-                  marginTop: 16,
-                  background: r.color,
-                  borderRadius: 8,
-                  padding: "8px 0",
-                  color: r.role === "owner" ? "#000" : palette.text,
+                  width: 64, height: 64, borderRadius: 16,
+                  background: r.color + "22",
+                  border: `1.5px solid ${r.color}44`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 32, margin: "0 auto 16px",
+                  boxShadow: hoveredRole === r.role ? `0 8px 24px ${r.color}33` : "none",
+                  transition: "box-shadow 0.25s",
+                }}>{r.icon}</div>
+                <p style={{ color: palette.text, fontWeight: 800, fontSize: 16, margin: "0 0 6px" }}>{r.title}</p>
+                <p style={{ color: palette.muted, fontSize: 11, margin: "0 0 20px", fontFamily: "'Space Mono', monospace" }}>{r.sub}</p>
+                <div style={{
+                  background: hoveredRole === r.role
+                    ? `linear-gradient(135deg, ${r.color}, ${r.color === palette.blue ? palette.purple : palette.orange})`
+                    : r.color + "22",
+                  border: `1px solid ${r.color}44`,
+                  borderRadius: 10,
+                  padding: "9px 0",
+                  color: hoveredRole === r.role ? (r.role === "owner" ? "#000" : "#fff") : r.color,
                   fontWeight: 700,
                   fontSize: 13,
+                  transition: "all 0.25s",
+                  boxShadow: hoveredRole === r.role ? `0 4px 16px ${r.color}55` : "none",
                 }}>
-                  Get Started →
+                  {r.ctaText} →
                 </div>
               </div>
             ))}
@@ -189,124 +255,205 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Stats */}
+      {/* ── Stats ─────────────────────────────────────────────────────── */}
       <section style={{
-        background: "#0D1528",
-        borderTop: `1px solid ${palette.cardBorder}`,
-        borderBottom: `1px solid ${palette.cardBorder}`,
-        padding: "28px 24px",
+        background: "rgba(255,255,255,0.02)",
+        borderTop: "1px solid rgba(255,255,255,0.06)",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        padding: "32px 24px",
       }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 20 }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 24 }}>
           {stats.map((s) => (
             <div key={s.label} style={{ textAlign: "center" }}>
-              <p style={{ color: palette.accent, fontSize: 28, fontWeight: 800, margin: 0 }}>{s.value}</p>
-              <p style={{ color: palette.muted, fontSize: 12, margin: "4px 0 0", fontFamily: "'Space Mono', monospace" }}>{s.label}</p>
+              <p style={{
+                fontSize: 32,
+                fontWeight: 800,
+                margin: "0 0 4px",
+                fontFamily: "'Space Mono', monospace",
+                background: `linear-gradient(135deg, ${palette.accent}, ${palette.orange})`,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}>{s.value}</p>
+              <p style={{ color: palette.muted, fontSize: 11, margin: 0, fontFamily: "'Space Mono', monospace", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                {s.label}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Job Categories */}
-      <section style={{ padding: "56px 24px", maxWidth: 900, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 36 }}>
-          <h3 style={{ fontSize: 24, fontWeight: 800, marginBottom: 8 }}>Popular Job Categories</h3>
-          <p style={{ color: palette.muted, fontFamily: "'Space Mono', monospace", fontSize: 12 }}>
+      {/* ── Job Categories ────────────────────────────────────────────── */}
+      <section style={{ padding: "72px 24px", maxWidth: 960, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 44 }}>
+          <p style={{ color: palette.accent, fontSize: 11, fontFamily: "'Space Mono', monospace", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 8 }}>
+            What We Cover
+          </p>
+          <h3 style={{
+            fontSize: "clamp(24px, 3vw, 34px)",
+            fontWeight: 800,
+            marginBottom: 10,
+            background: `linear-gradient(135deg, ${palette.text}, ${palette.textSoft})`,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}>Popular Job Categories</h3>
+          <p style={{ color: palette.muted, fontFamily: "'Space Mono', monospace", fontSize: 12, margin: 0 }}>
             From tea shops to delivery — we cover all blue-collar trades
           </p>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: 12 }}>
-          {jobCategories.map((cat) => (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))", gap: 14 }}>
+          {jobCategories.map((cat, i) => (
             <div
               key={cat.label}
+              onMouseEnter={() => setHoveredCat(i)}
+              onMouseLeave={() => setHoveredCat(null)}
               style={{
-                background: palette.card,
-                border: `1px solid ${palette.cardBorder}`,
-                borderRadius: 12,
-                padding: "18px 12px",
+                background: hoveredCat === i ? palette.accent + "14" : "rgba(255,255,255,0.04)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                border: `1px solid ${hoveredCat === i ? palette.accent + "55" : "rgba(255,255,255,0.08)"}`,
+                borderRadius: 14,
+                padding: "22px 12px",
                 textAlign: "center",
                 cursor: "pointer",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = palette.accent + "55";
-                e.currentTarget.style.background = palette.cardHover;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = palette.cardBorder;
-                e.currentTarget.style.background = palette.card;
+                transition: "all 0.2s ease",
+                transform: hoveredCat === i ? "translateY(-3px)" : "none",
+                boxShadow: hoveredCat === i ? `0 8px 24px ${palette.accent}20` : "none",
               }}
             >
-              <div style={{ fontSize: 28, marginBottom: 8 }}>{cat.icon}</div>
-              <p style={{ color: palette.muted, fontSize: 11, margin: 0, fontWeight: 600 }}>{cat.label}</p>
+              <div style={{
+                fontSize: 30,
+                marginBottom: 10,
+                transition: "transform 0.2s",
+                transform: hoveredCat === i ? "scale(1.15)" : "scale(1)",
+                display: "block",
+              }}>{cat.icon}</div>
+              <p style={{ color: hoveredCat === i ? palette.accent : palette.muted, fontSize: 11, margin: 0, fontWeight: 700, transition: "color 0.2s" }}>
+                {cat.label}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Features */}
-      <section style={{ padding: "0 24px 60px", maxWidth: 900, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 36 }}>
-          <h3 style={{ fontSize: 24, fontWeight: 800, marginBottom: 8 }}>Why Blue Collar Job?</h3>
-          <p style={{ color: palette.muted, fontFamily: "'Space Mono', monospace", fontSize: 12 }}>
-            Built for Tamil Nadu workers — in their language, on their terms
+      {/* ── Features ──────────────────────────────────────────────────── */}
+      <section style={{ padding: "0 24px 72px", maxWidth: 960, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 44 }}>
+          <p style={{ color: palette.blue, fontSize: 11, fontFamily: "'Space Mono', monospace", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 8 }}>
+            Why Choose Us
+          </p>
+          <h3 style={{
+            fontSize: "clamp(24px, 3vw, 34px)",
+            fontWeight: 800,
+            marginBottom: 10,
+            background: `linear-gradient(135deg, ${palette.text}, ${palette.textSoft})`,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}>Built for Tamil Nadu</h3>
+          <p style={{ color: palette.muted, fontFamily: "'Space Mono', monospace", fontSize: 12, margin: 0 }}>
+            In their language, on their terms
           </p>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: 18 }}>
           {features.map((f) => (
             <div
               key={f.title}
               style={{
-                background: palette.card,
-                border: `1px solid ${palette.cardBorder}`,
-                borderLeft: `3px solid ${f.color}`,
-                borderRadius: 12,
-                padding: "20px",
+                background: "rgba(255,255,255,0.04)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                border: `1px solid rgba(255,255,255,0.08)`,
+                borderTop: `2px solid ${f.color}`,
+                borderRadius: 16,
+                padding: "24px 20px",
+                transition: "box-shadow 0.25s",
               }}
             >
-              <div style={{ fontSize: 30, marginBottom: 12 }}>{f.icon}</div>
+              <div style={{
+                width: 48, height: 48, borderRadius: 12,
+                background: f.color + "18",
+                border: `1px solid ${f.color}33`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 24, marginBottom: 16,
+              }}>{f.icon}</div>
               <h4 style={{ color: f.color, fontSize: 14, fontWeight: 800, marginBottom: 8 }}>{f.title}</h4>
-              <p style={{ color: palette.muted, fontSize: 12, lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
+              <p style={{ color: palette.muted, fontSize: 12, lineHeight: 1.7, margin: 0 }}>{f.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* CTA */}
-      <section style={{
-        background: `linear-gradient(135deg, ${palette.accent}18, ${palette.blue}18)`,
-        border: `1px solid ${palette.accent}33`,
-        margin: "0 24px 60px",
-        borderRadius: 20,
-        padding: "44px 32px",
-        textAlign: "center",
-        maxWidth: 900 - 48,
-        marginLeft: "auto",
-        marginRight: "auto",
-      }}>
-        <h3 style={{ fontSize: 26, fontWeight: 800, marginBottom: 10 }}>
-          Ready to Find Your Next Job?
-        </h3>
-        <p style={{ color: palette.muted, fontSize: 14, marginBottom: 28 }}>
-          Tamil-speaking AI bot · Takes only 3 minutes · No resume needed
-        </p>
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <Button size="lg" onClick={() => navigate("/worker/onboard")}>
-            👷 Start as Worker
-          </Button>
-          <Button size="lg" variant="outline" onClick={() => navigate("/owner/dashboard")}>
-            🏪 Post a Job
-          </Button>
+      {/* ── CTA ───────────────────────────────────────────────────────── */}
+      <section style={{ padding: "0 24px 80px" }}>
+        <div style={{
+          maxWidth: 860,
+          margin: "0 auto",
+          background: "rgba(255,255,255,0.04)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          border: `1px solid rgba(245,158,11,0.25)`,
+          borderRadius: 24,
+          padding: "56px 40px",
+          textAlign: "center",
+          position: "relative",
+          overflow: "hidden",
+        }}>
+          <div style={{
+            position: "absolute", top: "50%", left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400, height: 400,
+            borderRadius: "50%",
+            background: `radial-gradient(circle, ${palette.accent}0f 0%, transparent 70%)`,
+            pointerEvents: "none",
+          }} />
+          <div style={{ position: "relative" }}>
+            <p style={{ color: palette.accent, fontSize: 11, fontFamily: "'Space Mono', monospace", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 14 }}>
+              Get Started Today
+            </p>
+            <h3 style={{
+              fontSize: "clamp(22px, 3vw, 34px)",
+              fontWeight: 800,
+              marginBottom: 12,
+              background: `linear-gradient(135deg, ${palette.text}, ${palette.accent})`,
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}>
+              Ready to Find Your Next Job?
+            </h3>
+            <p style={{ color: palette.muted, fontSize: 14, marginBottom: 32, maxWidth: 420, margin: "0 auto 32px" }}>
+              Tamil-speaking AI bot · Takes only 3 minutes · No resume needed
+            </p>
+            <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
+              <Button size="lg" onClick={() => navigate("/worker/onboard")}>
+                👷 Start as Worker
+              </Button>
+              <Button size="lg" variant="outline" onClick={() => navigate("/owner/dashboard")}>
+                🏪 Post a Job
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
+      {/* ── Footer ────────────────────────────────────────────────────── */}
       <footer style={{
-        background: "#050C1A",
-        borderTop: `1px solid ${palette.cardBorder}`,
-        padding: "24px",
+        background: "rgba(255,255,255,0.02)",
+        borderTop: "1px solid rgba(255,255,255,0.06)",
+        padding: "28px 24px",
         textAlign: "center",
       }}>
-        <p style={{ color: palette.dim, fontSize: 12, fontFamily: "'Space Mono', monospace" }}>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 10, marginBottom: 8 }}>
+          <div style={{
+            background: `linear-gradient(135deg, ${palette.accent}, ${palette.orange})`,
+            borderRadius: 8, width: 28, height: 28,
+            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14,
+          }}>👷</div>
+          <span style={{ fontWeight: 800, fontSize: 14 }}>Blue Collar Job</span>
+        </div>
+        <p style={{ color: palette.dim, fontSize: 11, fontFamily: "'Space Mono', monospace" }}>
           © 2025 Blue Collar Job · வேலை வாய்ப்பு · Tamil Nadu MVP
         </p>
       </footer>

@@ -52,58 +52,64 @@ const AI_QUICK_REPLIES = {
   "Are you verified?": "Yes sir, Aadhaar verified. ✅ My trust score 82/100.",
 };
 
-function MessageBubble({ msg, isOwner, isSystem }) {
-  if (isSystem) {
-    return (
-      <div style={{
-        background: palette.accent + "18",
-        border: `1px solid ${palette.accent}33`,
-        borderRadius: 10, padding: "8px 14px",
-        margin: "8px auto", maxWidth: "80%",
-        textAlign: "center",
-      }}>
-        <p style={{ color: palette.accent, fontSize: 12, margin: 0 }}>{msg.msg}</p>
-        <p style={{ color: palette.dim, fontSize: 9, margin: "3px 0 0", fontFamily: "'Space Mono', monospace" }}>{msg.ts}</p>
-      </div>
-    );
-  }
+function SystemMessage({ msg }) {
+  return (
+    <div style={{
+      background: `rgba(245,158,11,0.08)`,
+      border: `1px solid ${palette.accent}33`,
+      borderRadius: 12, padding: "9px 16px",
+      margin: "10px auto", maxWidth: "82%",
+      textAlign: "center",
+    }}>
+      <p style={{ color: palette.accent, fontSize: 12, margin: 0 }}>{msg.msg}</p>
+      <p style={{ color: palette.dim, fontSize: 9, margin: "3px 0 0", fontFamily: "'Space Mono', monospace" }}>{msg.ts}</p>
+    </div>
+  );
+}
 
+function MessageBubble({ msg, isOwner }) {
   return (
     <div
       className="fade-in"
       style={{
         display: "flex",
         justifyContent: isOwner ? "flex-end" : "flex-start",
-        marginBottom: 12,
-        gap: 8,
+        marginBottom: 14,
+        gap: 10,
         alignItems: "flex-end",
       }}
     >
       {!isOwner && (
         <div style={{
           width: 32, height: 32, borderRadius: "50%",
-          background: palette.blue + "33",
+          background: palette.blue + "22",
+          border: `1.5px solid ${palette.blue}33`,
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 16, flexShrink: 0,
         }}>👷</div>
       )}
       <div style={{
-        background: isOwner ? palette.accent + "22" : "#1A2D45",
-        border: `1px solid ${isOwner ? palette.accent + "44" : palette.blue + "33"}`,
-        borderRadius: isOwner ? "14px 4px 14px 14px" : "4px 14px 14px 14px",
-        padding: "10px 14px",
-        maxWidth: "70%",
+        background: isOwner
+          ? "rgba(245,158,11,0.1)"
+          : "rgba(99,102,241,0.1)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        border: `1px solid ${isOwner ? palette.accent + "33" : palette.blue + "33"}`,
+        borderRadius: isOwner ? "16px 4px 16px 16px" : "4px 16px 16px 16px",
+        padding: "11px 16px",
+        maxWidth: "72%",
       }}>
-        <p style={{ color: isOwner ? palette.accent : palette.blue, fontSize: 9, fontFamily: "'Space Mono', monospace", margin: "0 0 3px" }}>
+        <p style={{ color: isOwner ? palette.accent : palette.blue, fontSize: 9, fontFamily: "'Space Mono', monospace", margin: "0 0 4px", letterSpacing: 0.5, textTransform: "uppercase" }}>
           {isOwner ? "🏪 You (Owner)" : "👷 Murugan K."}
         </p>
-        <p style={{ color: palette.text, fontSize: 13, margin: 0, lineHeight: 1.6 }}>{msg.msg}</p>
-        <p style={{ color: palette.dim, fontSize: 9, fontFamily: "'Space Mono', monospace", margin: "4px 0 0", textAlign: "right" }}>{msg.ts}</p>
+        <p style={{ color: palette.text, fontSize: 13, margin: 0, lineHeight: 1.65 }}>{msg.msg}</p>
+        <p style={{ color: palette.dim, fontSize: 9, fontFamily: "'Space Mono', monospace", margin: "5px 0 0", textAlign: "right" }}>{msg.ts}</p>
       </div>
       {isOwner && (
         <div style={{
           width: 32, height: 32, borderRadius: "50%",
-          background: palette.accent + "33",
+          background: palette.accent + "22",
+          border: `1.5px solid ${palette.accent}33`,
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 16, flexShrink: 0,
         }}>🏪</div>
@@ -114,12 +120,12 @@ function MessageBubble({ msg, isOwner, isSystem }) {
 
 function TypingIndicator() {
   return (
-    <div style={{ display: "flex", gap: 4, padding: "10px 14px", alignItems: "center" }}>
+    <div style={{ display: "flex", gap: 5, padding: "11px 16px", alignItems: "center" }}>
       {[0, 1, 2].map((i) => (
         <div key={i} style={{
           width: 6, height: 6, borderRadius: "50%",
           background: palette.blue,
-          animation: `bounce 1s ease ${i * 0.2}s infinite`,
+          animation: `bounce 1s ease ${i * 0.22}s infinite`,
         }} />
       ))}
     </div>
@@ -137,10 +143,7 @@ export default function ChatPage() {
   const [hired, setHired] = useState(false);
   const chatRef = useRef(null);
 
-  const now = () => {
-    const d = new Date();
-    return d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
-  };
+  const now = () => new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 
   useEffect(() => {
     chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: "smooth" });
@@ -148,11 +151,8 @@ export default function ChatPage() {
 
   const sendMessage = (text) => {
     if (!text.trim()) return;
-    const ownerMsg = { id: Date.now(), role: "owner", msg: text, ts: now() };
-    setMessages((prev) => [...prev, ownerMsg]);
+    setMessages((prev) => [...prev, { id: Date.now(), role: "owner", msg: text, ts: now() }]);
     setInput("");
-
-    // Simulate worker typing + reply
     setWorkerTyping(true);
     const reply = AI_QUICK_REPLIES[text] || "Okay sir, understood! Will do.";
     setTimeout(() => {
@@ -177,21 +177,33 @@ export default function ChatPage() {
 
   return (
     <div style={{ background: palette.bg, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+
       {/* Header */}
       <header style={{
-        background: "#050C1A",
-        borderBottom: `1px solid ${palette.cardBorder}`,
+        background: "rgba(4,8,15,0.92)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(255,255,255,0.07)",
         padding: "12px 20px",
         display: "flex",
         alignItems: "center",
         gap: 12,
         position: "sticky", top: 0, zIndex: 100,
       }}>
-        <button onClick={() => navigate(-1)} style={{ background: "none", border: "none", color: palette.muted, fontSize: 20, cursor: "pointer" }}>←</button>
+        <button
+          onClick={() => navigate(-1)}
+          style={{
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            color: palette.muted, fontSize: 16, cursor: "pointer",
+            borderRadius: 8, padding: "4px 10px",
+          }}
+        >←</button>
+
         <div style={{ position: "relative" }}>
           <div style={{
-            width: 38, height: 38, borderRadius: "50%",
-            background: palette.blue + "33",
+            width: 40, height: 40, borderRadius: "50%",
+            background: palette.blue + "22",
             border: `1.5px solid ${palette.blue}44`,
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 20,
@@ -201,14 +213,19 @@ export default function ChatPage() {
               position: "absolute", bottom: 1, right: 1,
               width: 10, height: 10, borderRadius: "50%",
               background: palette.green,
-              border: `2px solid #050C1A`,
+              border: `2px solid ${palette.bg}`,
+              boxShadow: `0 0 6px ${palette.green}`,
             }} />
           )}
         </div>
+
         <div style={{ flex: 1 }}>
           <p style={{ fontWeight: 800, fontSize: 14, margin: 0 }}>{worker.name}</p>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <p style={{ color: worker.online ? palette.green : palette.muted, fontSize: 10, margin: 0, fontFamily: "'Space Mono', monospace" }}>
+            <p style={{
+              color: worker.online ? palette.green : palette.muted,
+              fontSize: 9, margin: 0, fontFamily: "'Space Mono', monospace",
+            }}>
               {worker.online ? "● Online" : "○ Last seen 2h ago"}
             </p>
             {worker.verified && <Badge color={palette.green} size="xs">✓ Verified</Badge>}
@@ -223,18 +240,18 @@ export default function ChatPage() {
               <Button size="sm" variant="ghost">📱 WhatsApp</Button>
             </>
           ) : (
-            <Badge color={palette.green}>✓ Hired!</Badge>
+            <Badge color={palette.green} glow>✓ Hired!</Badge>
           )}
         </div>
       </header>
 
-      {/* Worker Mini-Profile */}
+      {/* Worker Mini-Profile Bar */}
       <div style={{
-        background: "#0D1528",
-        borderBottom: `1px solid ${palette.cardBorder}`,
-        padding: "10px 20px",
+        background: "rgba(13,21,40,0.95)",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        padding: "8px 20px",
       }}>
-        <div style={{ maxWidth: 680, margin: "0 auto", display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+        <div style={{ maxWidth: 680, margin: "0 auto", display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
           <span style={{ color: palette.muted, fontSize: 11, fontFamily: "'Space Mono', monospace" }}>{worker.skill}</span>
           <Badge color={palette.accent} size="xs">82% match</Badge>
           <Badge color={palette.purple} size="xs">3 years exp</Badge>
@@ -244,23 +261,27 @@ export default function ChatPage() {
       </div>
 
       {/* Chat Messages */}
-      <div
-        ref={chatRef}
-        style={{ flex: 1, overflowY: "auto", padding: "16px 20px" }}
-      >
+      <div ref={chatRef} style={{ flex: 1, overflowY: "auto", padding: "16px 20px" }}>
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
           {messages.map((msg) => (
-            <MessageBubble
-              key={msg.id}
-              msg={msg}
-              isOwner={msg.role === "owner"}
-              isSystem={msg.type === "system"}
-            />
+            msg.type === "system"
+              ? <SystemMessage key={msg.id} msg={msg} />
+              : <MessageBubble key={msg.id} msg={msg} isOwner={msg.role === "owner"} />
           ))}
           {workerTyping && (
-            <div style={{ display: "flex", alignItems: "flex-end", gap: 8, marginBottom: 12 }}>
-              <div style={{ width: 32, height: 32, borderRadius: "50%", background: palette.blue + "33", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>👷</div>
-              <div style={{ background: "#1A2D45", border: `1px solid ${palette.blue}33`, borderRadius: "4px 14px 14px 14px", padding: "4px 8px" }}>
+            <div style={{ display: "flex", alignItems: "flex-end", gap: 10, marginBottom: 12 }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: "50%",
+                background: palette.blue + "22",
+                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16,
+              }}>👷</div>
+              <div style={{
+                background: "rgba(99,102,241,0.1)",
+                backdropFilter: "blur(20px)",
+                border: `1px solid ${palette.blue}33`,
+                borderRadius: "4px 16px 16px 16px",
+                padding: "4px 8px",
+              }}>
                 <TypingIndicator />
               </div>
             </div>
@@ -268,16 +289,16 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* AI Suggestion Chips */}
+      {/* AI Suggestions */}
       {showAISuggest && (
         <div style={{
-          background: "#0A1628",
-          borderTop: `1px solid ${palette.cardBorder}`,
+          background: "rgba(8,14,26,0.97)",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
           padding: "10px 20px",
         }}>
           <div style={{ maxWidth: 680, margin: "0 auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <p style={{ color: palette.accent, fontSize: 10, fontFamily: "'Space Mono', monospace", margin: 0 }}>
+              <p style={{ color: palette.accent, fontSize: 9, fontFamily: "'Space Mono', monospace", margin: 0, textTransform: "uppercase", letterSpacing: 0.8 }}>
                 🤖 AI Quick Questions
               </p>
               <button
@@ -291,10 +312,11 @@ export default function ChatPage() {
                   key={s}
                   onClick={() => sendMessage(s)}
                   style={{
-                    background: palette.card,
+                    background: "rgba(255,255,255,0.04)",
+                    backdropFilter: "blur(20px)",
                     border: `1px solid ${palette.accent}44`,
                     borderRadius: 20,
-                    padding: "5px 12px",
+                    padding: "5px 14px",
                     color: palette.accent,
                     fontSize: 11,
                     cursor: "pointer",
@@ -302,11 +324,15 @@ export default function ChatPage() {
                     fontWeight: 600,
                     transition: "all 0.18s",
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = palette.accent + "22"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = palette.card; }}
-                >
-                  {s}
-                </button>
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = palette.accent + "18";
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                    e.currentTarget.style.transform = "none";
+                  }}
+                >{s}</button>
               ))}
             </div>
           </div>
@@ -315,18 +341,22 @@ export default function ChatPage() {
 
       {/* Input */}
       <div style={{
-        background: "#050C1A",
-        borderTop: `1px solid ${palette.cardBorder}`,
-        padding: "14px 20px",
+        background: "rgba(4,8,15,0.97)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        borderTop: "1px solid rgba(255,255,255,0.07)",
+        padding: "13px 20px",
       }}>
-        <div style={{ maxWidth: 680, margin: "0 auto", display: "flex", gap: 8 }}>
+        <div style={{ maxWidth: 680, margin: "0 auto", display: "flex", gap: 10 }}>
           <button
             onClick={() => setShowAISuggest((v) => !v)}
             style={{
-              background: palette.accent + "22",
-              border: `1px solid ${palette.accent}44`,
-              borderRadius: 8, padding: "0 12px",
-              color: palette.accent, fontSize: 16, cursor: "pointer",
+              background: showAISuggest ? palette.accent + "22" : "rgba(255,255,255,0.04)",
+              border: `1px solid ${showAISuggest ? palette.accent + "55" : "rgba(255,255,255,0.09)"}`,
+              borderRadius: 10, padding: "0 12px",
+              color: showAISuggest ? palette.accent : palette.muted,
+              fontSize: 16, cursor: "pointer",
+              transition: "all 0.18s",
             }}
             title="AI Suggestions"
           >🤖</button>
@@ -336,10 +366,13 @@ export default function ChatPage() {
             onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
             placeholder="Type a message..."
             style={{
-              flex: 1, background: palette.surface,
-              border: `1px solid ${palette.cardBorder}`,
-              borderRadius: 10, padding: "11px 16px",
+              flex: 1,
+              background: "rgba(255,255,255,0.05)",
+              border: `1px solid ${input ? palette.accent + "44" : "rgba(255,255,255,0.09)"}`,
+              borderRadius: 12, padding: "11px 16px",
               color: palette.text, fontSize: 14, outline: "none",
+              fontFamily: "'Syne', sans-serif",
+              transition: "border-color 0.2s",
             }}
           />
           <Button onClick={() => sendMessage(input)} disabled={!input.trim()}>
