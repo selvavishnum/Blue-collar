@@ -3,7 +3,7 @@ import time
 import aiohttp
 from database import get_setting
 
-EZVIZ_BASE = "https://open.ys7.com"
+EZVIZ_BASE = os.getenv("EZVIZ_BASE_URL", "https://iopen.ezviz.com")
 
 _DEMO = os.getenv("DEMO_MODE", "").lower() in ("1", "true", "yes")
 
