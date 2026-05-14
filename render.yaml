@@ -27,7 +27,7 @@ services:
   - type: web
     name: shopguard-ui
     env: static
-    buildCommand: cd client && npm ci && npm run build
+    buildCommand: cd client && npm install && npm run build
     staticPublishPath: client/dist
     pullRequestPreviewsEnabled: true
     envVars:
