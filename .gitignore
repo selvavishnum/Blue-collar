@@ -1,5 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.pt
+shopguard.db
+server/.env
+
+# Node
 node_modules/
-dist/
+client/dist/
 .env
 .env.local
+
+# OS
 .DS_Store
+Thumbs.db
