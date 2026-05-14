@@ -1,8 +1,18 @@
+import os
 import time
 import aiohttp
 from database import get_setting
 
 EZVIZ_BASE = "https://open.ys7.com"
+
+_DEMO = os.getenv("DEMO_MODE", "").lower() in ("1", "true", "yes")
+
+_DEMO_CAMERAS = [
+    {"deviceSerial": "DEMO001", "channelNo": 1, "deviceName": "Shop Front"},
+    {"deviceSerial": "DEMO002", "channelNo": 1, "deviceName": "Checkout Counter"},
+    {"deviceSerial": "DEMO003", "channelNo": 1, "deviceName": "Storage Room"},
+]
+_DEMO_SNAPSHOT = "https://ultralytics.com/images/zidane.jpg"
 
 _token: str = ""
 _token_expiry: int = 0
@@ -47,6 +57,8 @@ async def list_devices(page: int = 0, size: int = 50) -> list[dict]:
 
 async def list_all_devices() -> list[dict]:
     """Fetch all devices across pages."""
+    if _DEMO:
+        return _DEMO_CAMERAS
     all_devices = []
     page = 0
     while True:
@@ -61,6 +73,8 @@ async def list_all_devices() -> list[dict]:
 
 
 async def capture_snapshot(device_serial: str, channel: int = 1) -> str | None:
+    if _DEMO:
+        return _DEMO_SNAPSHOT
     token = await ensure_token()
     result = await _post("/api/lapp/device/capture", {
         "accessToken": token,
@@ -74,6 +88,8 @@ async def capture_snapshot(device_serial: str, channel: int = 1) -> str | None:
 
 async def get_live_stream(device_serial: str, channel: int = 1, protocol: int = 2) -> str | None:
     """protocol: 1=ezopen, 2=HLS, 3=FLV, 4=RTMP"""
+    if _DEMO:
+        return None
     token = await ensure_token()
     result = await _post("/api/lapp/live/address/get", {
         "accessToken": token,
@@ -103,6 +119,8 @@ async def get_alarms(device_serial: str, start_ms: int, end_ms: int) -> list[dic
 
 
 async def test_connection() -> bool:
+    if _DEMO:
+        return True
     try:
         await get_token()
         return True
