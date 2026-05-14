@@ -7,23 +7,19 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     plan: free
-    disk:
-      name: shopguard-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
       - key: EZVIZ_APP_KEY
-        sync: false       # Set in Render Dashboard
+        sync: false
       - key: EZVIZ_APP_SECRET
-        sync: false       # Set in Render Dashboard
+        sync: false
       - key: EMAIL_FROM
-        sync: false       # Gmail address for sending alerts
+        sync: false
       - key: EMAIL_PASSWORD
-        sync: false       # Gmail App Password (not your login password)
+        sync: false
       - key: EMAIL_TO
-        sync: false       # Email address to receive alerts
+        sync: false
       - key: DB_PATH
-        value: /var/data/shopguard.db
+        value: shopguard.db
       - key: DEMO_MODE
         value: false
 
@@ -37,3 +33,4 @@ services:
     envVars:
       - key: VITE_API_URL
         sync: false       # Set to: https://shopguard-api.onrender.com
+
