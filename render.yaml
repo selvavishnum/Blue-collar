@@ -24,6 +24,8 @@ services:
         sync: false       # Email address to receive alerts
       - key: DB_PATH
         value: /var/data/shopguard.db
+      - key: DEMO_MODE
+        value: false
 
   # ── Frontend (React PWA Static Site) ─────────────────────────────────────────
   - type: web
